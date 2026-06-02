@@ -122,7 +122,7 @@ pipeline {
           steps {
             retry(2) {
               echo "Building User Service Docker Image..."
-              sh "docker build -t user-service:ci-${SHORT_SHA} user-service/"
+              sh "docker build -t devops-user/user-service:ci-${SHORT_SHA} user-service/"
               // Optional: Push to registry
               // sh "docker push user-service:ci-${SHORT_SHA}"
             }
@@ -136,7 +136,7 @@ pipeline {
           steps {
             retry(2) {
               echo "Building Transaction Service Docker Image..."
-              sh "docker build -t transaction-service:ci-${SHORT_SHA} transaction-service/"
+              sh "docker build -t devops-user/transaction-service:ci-${SHORT_SHA} transaction-service/"
               // Optional: Push to registry
               // sh "docker push transaction-service:ci-${SHORT_SHA}"
             }
@@ -150,7 +150,7 @@ pipeline {
           steps {
             retry(2) {
               echo "Building Notification Service Docker Image..."
-              sh "docker build -t notification-service:ci-${SHORT_SHA} notification-service/"
+              sh "docker build -t devops-user/notification-service:ci-${SHORT_SHA} notification-service/"
               // Optional: Push to registry
               // sh "docker push notification-service:ci-${SHORT_SHA}"
             }

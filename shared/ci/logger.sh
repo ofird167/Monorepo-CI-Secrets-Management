@@ -23,5 +23,5 @@ cat << EOF >> "$LOG_FILE"
 [$TIMESTAMP] [$LEVEL] $MESSAGE
 EOF
 
-# Print to stdout for CI logs
-echo "[$TIMESTAMP] [$LEVEL] $MESSAGE"
+# Print to stderr for CI logs
+echo "[$TIMESTAMP] [$LEVEL] $MESSAGE" >&2
