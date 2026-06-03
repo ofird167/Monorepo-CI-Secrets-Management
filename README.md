@@ -101,6 +101,12 @@ Alternatively, you can modify the default fallback values inside the [Jenkinsfil
 * **S3 State Bucket**: Update `AWS_S3_BUCKET` in the `Jenkinsfile` (line 12).
 * **Docker Registry & Username**: Update `DOCKER_REGISTRY` and `DOCKER_USERNAME` in the `Jenkinsfile` (lines 15-16).
 
+#### Parameterized Builds & Auto-Approval
+This pipeline supports **Parameterized Builds**. When triggering the build in the Jenkins Web UI, use **Build with Parameters** instead of "Build Now":
+*   `AUTO_APPROVE` (Checkbox): 
+    *   **Checked (`true`):** Skips the manual approval prompt and deploys automatically (Continuous Deployment).
+    *   **Unchecked (`false` - Default):** Pauses at the **Deploy Manual Gate** and waits for a developer to click "Deploy" or "Abort" in the UI.
+
 ### 3. S3 Synchronization Script Usage
 A utility script `shared/aws/s3_sync.sh` is provided to manage secrets.
 
