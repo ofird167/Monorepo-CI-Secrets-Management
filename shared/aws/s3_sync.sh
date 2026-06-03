@@ -1,11 +1,11 @@
 #!/bin/bash
-# Synchronizes the /secret/ directory with s3://devops-s3-state-bucket.
+# Synchronizes the /secret/ directory with AWS S3.
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$SCRIPT_DIR/../.."
 LOGGER="$SCRIPT_DIR/../ci/logger.sh"
-BUCKET_NAME="devops-s3-state-bucket"
+BUCKET_NAME="${AWS_S3_BUCKET:-your-s3-bucket}"
 SECRET_DIR="$ROOT_DIR/secret"
 
 chmod +x "$LOGGER"

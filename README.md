@@ -34,7 +34,7 @@ root/
 │   └── aws/
 │       └── s3_sync.sh            # AWS S3 remote secrets sync tool
 ├── secret/                       # Local secrets (ignored by Git)
-│   └── db_creds.env              # Mock DB credentials file
+│   └── secrets.env               # Mock DB credentials & local environment file
 └── log/                          # Local execution logs (ignored by Git)
     └── logs.txt                  # Output of local CI script runs
 ```
@@ -71,18 +71,44 @@ graph TD
 
 ---
 
-## 🔒 Secrets Management via AWS S3
+## 🔒 Secrets Management & Customization
 
-All database credentials, API keys, and sensitive environment configs are stored in `/secret` and synced with AWS S3. **This directory is excluded from Git via `.gitignore` to prevent leaks.**
+All database credentials, API keys, and sensitive environment configs are stored in `/secret` and synced with AWS S3. **This directory is excluded from Git via `.gitignore` to prevent secret leaks.**
 
-### S3 Synchronization Script Usage
+### 1. Local Configuration (via `example.env`)
+To run this project locally, developers need to create their own local secrets configuration file:
+
+1. Copy the template configuration file to the `/secret` folder:
+   ```bash
+   mkdir -p secret
+   cp example.env secret/secrets.env
+   ```
+2. Edit `secret/secrets.env` with your actual development secrets and database configuration (e.g., PostgreSQL credentials, local mock API keys).
+
+### 2. Customizing for Your Own Environment
+If another developer clones this repository, they can point the CI pipeline and sync scripts to their own AWS and Docker resources. There are two ways to do this:
+
+#### Option A: Set Variables in Jenkins (Recommended - No Code Changes)
+To avoid modifying the `Jenkinsfile`, configure the environment variables globally on your Jenkins server:
+1. Go to your Jenkins Dashboard $\rightarrow$ **Manage Jenkins** $\rightarrow$ **System**.
+2. Scroll down to **Global properties** $\rightarrow$ check the **Environment variables** box.
+3. Add the following variables:
+   * `AWS_S3_BUCKET` = `your-s3-bucket-name`
+   * `DOCKER_USERNAME` = `your-docker-username`
+
+#### Option B: Modify the Jenkinsfile
+Alternatively, you can modify the default fallback values inside the [Jenkinsfile](file:///home/devops-user/projects/interview5/Jenkinsfile) environment block directly:
+* **S3 State Bucket**: Update `AWS_S3_BUCKET` in the `Jenkinsfile` (line 12).
+* **Docker Registry & Username**: Update `DOCKER_REGISTRY` and `DOCKER_USERNAME` in the `Jenkinsfile` (lines 15-16).
+
+### 3. S3 Synchronization Script Usage
 A utility script `shared/aws/s3_sync.sh` is provided to manage secrets.
 
 1. **Upload local secrets to AWS S3:**
    ```bash
    ./shared/aws/s3_sync.sh upload
    ```
-   *Action:* Uploads files in `secret/` to `s3://devops-s3-state-bucket/secrets/`.
+   *Action:* Uploads files in `secret/` to your configured AWS S3 bucket (under `/secrets/`).
 
 2. **Download remote secrets to local workstation:**
    ```bash
@@ -94,7 +120,7 @@ A utility script `shared/aws/s3_sync.sh` is provided to manage secrets.
    ```bash
    ./shared/aws/s3_sync.sh clean
    ```
-   *Action:* Recursively removes all uploaded files inside `s3://devops-s3-state-bucket` to leave your S3 bucket clean.
+   *Action:* Recursively removes all uploaded files inside the configured S3 bucket to leave it clean.
 
 ---
 
@@ -128,24 +154,3 @@ You can run the CI stages manually to test before committing:
 ./shared/ci/scan.sh
 ```
 
----
-
-## 💻 GitHub Setup & Upload Guide
-
-To upload this repository to your private GitHub repository `devops-user/interview5`:
-
-1. **Create the Private Repository on GitHub:**
-   Go to GitHub and create a new repository. Set it to **Private** and name it `interview5`. Keep it empty (do not initialize with README, license, or gitignore).
-
-2. **Configure Remote Origin and Push:**
-   In your local terminal, run the following commands:
-   ```bash
-   # Add the GitHub remote origin
-   git remote add origin git@github.com:devops-user/interview5.git
-   
-   # Rename default branch to main (recommended)
-   git branch -M main
-   
-   # Push the codebase to your private main branch
-   git push -u origin main
-   ```

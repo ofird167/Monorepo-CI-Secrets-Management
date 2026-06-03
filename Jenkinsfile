@@ -8,8 +8,12 @@ pipeline {
   }
 
   environment {
-    // AWS S3 bucket holding project secrets
-    AWS_S3_BUCKET    = 'devops-s3-state-bucket'
+    // AWS S3 bucket holding project secrets (change to your own bucket)
+    AWS_S3_BUCKET    = "${env.AWS_S3_BUCKET ?: 'your-s3-bucket'}"
+    
+    // Docker registry and username/org (change to your own registry details)
+    DOCKER_REGISTRY  = "${env.DOCKER_REGISTRY ?: 'docker.io'}"
+    DOCKER_USERNAME  = "${env.DOCKER_USERNAME ?: 'your-docker-username'}"
     
     // Fallback if GIT_COMMIT is not populated in a local shell runner
     SHORT_SHA        = "${env.GIT_COMMIT ? env.GIT_COMMIT.take(7) : 'latest'}"
@@ -123,8 +127,9 @@ pipeline {
             retry(2) {
               echo "Building User Service Docker Image..."
               sh "docker build -t user-service:ci-${SHORT_SHA} user-service/"
-              // Optional: Push to registry
-              // sh "docker push user-service:ci-${SHORT_SHA}"
+              // Optional: Push to custom registry (e.g. Docker Hub)
+              // sh "docker tag user-service:ci-${SHORT_SHA} ${DOCKER_REGISTRY}/${DOCKER_USERNAME}/user-service:ci-${SHORT_SHA}"
+              // sh "docker push ${DOCKER_REGISTRY}/${DOCKER_USERNAME}/user-service:ci-${SHORT_SHA}"
             }
           }
         }
@@ -137,8 +142,9 @@ pipeline {
             retry(2) {
               echo "Building Transaction Service Docker Image..."
               sh "docker build -t transaction-service:ci-${SHORT_SHA} transaction-service/"
-              // Optional: Push to registry
-              // sh "docker push transaction-service:ci-${SHORT_SHA}"
+              // Optional: Push to custom registry (e.g. Docker Hub)
+              // sh "docker tag transaction-service:ci-${SHORT_SHA} ${DOCKER_REGISTRY}/${DOCKER_USERNAME}/transaction-service:ci-${SHORT_SHA}"
+              // sh "docker push ${DOCKER_REGISTRY}/${DOCKER_USERNAME}/transaction-service:ci-${SHORT_SHA}"
             }
           }
         }
@@ -151,8 +157,9 @@ pipeline {
             retry(2) {
               echo "Building Notification Service Docker Image..."
               sh "docker build -t notification-service:ci-${SHORT_SHA} notification-service/"
-              // Optional: Push to registry
-              // sh "docker push notification-service:ci-${SHORT_SHA}"
+              // Optional: Push to custom registry (e.g. Docker Hub)
+              // sh "docker tag notification-service:ci-${SHORT_SHA} ${DOCKER_REGISTRY}/${DOCKER_USERNAME}/notification-service:ci-${SHORT_SHA}"
+              // sh "docker push ${DOCKER_REGISTRY}/${DOCKER_USERNAME}/notification-service:ci-${SHORT_SHA}"
             }
           }
         }
