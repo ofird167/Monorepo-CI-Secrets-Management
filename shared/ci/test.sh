@@ -29,7 +29,7 @@ for SERVICE in $SERVICES; do
       cd "$ROOT_DIR/user-service"
       if [ ! -d "node_modules" ]; then
         "$LOGGER" "INFO" "node_modules not found. Installing dependencies..."
-        npm ci
+        npm install --no-audit --no-fund
       fi
       "$LOGGER" "INFO" "Running Jest tests..."
       npm run test
@@ -41,7 +41,7 @@ for SERVICE in $SERVICES; do
         "$LOGGER" "WARN" "pytest not found globally. Running via python module check..."
         python3 -m pytest -v --junitxml=report.xml || {
           "$LOGGER" "INFO" "Installing pytest in user space..."
-          pip3 install --user pytest
+          pip3 install --user pytest --break-system-packages
           python3 -m pytest -v --junitxml=report.xml
         }
       else

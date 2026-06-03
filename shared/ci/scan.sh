@@ -46,14 +46,16 @@ else
   )
   
   SECRET_FOUND=0
+  SECRETS_LOG=$(mktemp)
   for PATTERN in "${SECRET_PATTERNS[@]}"; do
     # Run git grep to respect .gitignore rules. Ignore matches inside /secret/ and /log/
-    if git -C "$ROOT_DIR" grep -E -I -n "$PATTERN" -- ':!secret/*' ':!log/*' > /tmp/secrets_scan.log 2>&1; then
+    if git -C "$ROOT_DIR" grep -E -I -n "$PATTERN" -- ':!secret/*' ':!log/*' > "$SECRETS_LOG" 2>&1; then
       "$LOGGER" "ERROR" "CRITICAL: Hardcoded secret pattern matches found:"
-      cat /tmp/secrets_scan.log
+      cat "$SECRETS_LOG"
       SECRET_FOUND=1
     fi
   done
+  rm -f "$SECRETS_LOG"
   
   if [ "$SECRET_FOUND" -ne 0 ]; then
     "$LOGGER" "ERROR" "Secrets scan failed! Remove hardcoded secrets from code."
@@ -82,7 +84,7 @@ for SERVICE in $SERVICES; do
         "$LOGGER" "WARN" "bandit not found globally. Running via python module check..."
         python3 -m bandit -r . || {
           "$LOGGER" "INFO" "Installing bandit in user space..."
-          pip3 install --user bandit
+          pip3 install --user bandit --break-system-packages
           python3 -m bandit -r .
         }
       else

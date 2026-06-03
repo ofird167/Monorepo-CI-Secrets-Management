@@ -29,7 +29,7 @@ for SERVICE in $SERVICES; do
       cd "$ROOT_DIR/user-service"
       if [ ! -d "node_modules" ]; then
         "$LOGGER" "INFO" "node_modules not found. Installing dev dependencies..."
-        npm ci
+        npm install --no-audit --no-fund
       fi
       "$LOGGER" "INFO" "Running ESLint..."
       npm run lint
@@ -41,7 +41,7 @@ for SERVICE in $SERVICES; do
         "$LOGGER" "WARN" "flake8 not found globally. Running via python module check..."
         python3 -m flake8 . || {
           "$LOGGER" "INFO" "Installing flake8 in user space..."
-          pip3 install --user flake8
+          pip3 install --user flake8 --break-system-packages
           python3 -m flake8 .
         }
       else
