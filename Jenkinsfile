@@ -166,12 +166,6 @@ pipeline {
       }
     }
 
-    stage('Deploy Manual Gate') {
-      steps {
-        // Pauses build execution requesting developer approval before success status
-        input message: 'Approve deployment of built microservice Docker images?', ok: 'Deploy'
-      }
-    }
 
     stage('Promote CD Trigger') {
       steps {
