@@ -7,6 +7,10 @@ pipeline {
     disableConcurrentBuilds()
   }
 
+  parameters {
+    booleanParam(name: 'AUTO_APPROVE', defaultValue: false, description: 'Skip manual approval gate and deploy automatically')
+  }
+
   environment {
     // AWS S3 bucket holding project secrets (change to your own bucket)
     AWS_S3_BUCKET    = "${env.AWS_S3_BUCKET ?: 'your-s3-bucket'}"
@@ -166,6 +170,15 @@ pipeline {
       }
     }
 
+    stage('Deploy Manual Gate') {
+      when {
+        expression { params.AUTO_APPROVE == false }
+      }
+      steps {
+        // Pauses build execution requesting developer approval before success status
+        input message: 'Approve deployment of built microservice Docker images?', ok: 'Deploy'
+      }
+    }
 
     stage('Promote CD Trigger') {
       steps {
