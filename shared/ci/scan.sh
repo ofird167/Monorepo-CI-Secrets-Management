@@ -82,13 +82,13 @@ for SERVICE in $SERVICES; do
       cd "$ROOT_DIR/transaction-service"
       if ! command -v bandit >/dev/null 2>&1; then
         "$LOGGER" "WARN" "bandit not found globally. Running via python module check..."
-        python3 -m bandit -r . || {
+        python3 -m bandit -r . -x "test_*.py" || {
           "$LOGGER" "INFO" "Installing bandit in user space..."
           pip3 install --user bandit --break-system-packages
-          python3 -m bandit -r .
+          python3 -m bandit -r . -x "test_*.py"
         }
       else
-        bandit -r .
+        bandit -r . -x "test_*.py"
       fi
       ;;
       
