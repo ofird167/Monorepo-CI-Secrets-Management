@@ -37,16 +37,10 @@ for SERVICE in $SERVICES; do
       
     "transaction-service")
       cd "$ROOT_DIR/transaction-service"
-      if ! command -v pytest >/dev/null 2>&1; then
-        "$LOGGER" "WARN" "pytest not found globally. Running via python module check..."
-        python3 -m pytest -v --junitxml=report.xml || {
-          "$LOGGER" "INFO" "Installing pytest in user space..."
-          pip3 install --user pytest --break-system-packages
-          python3 -m pytest -v --junitxml=report.xml
-        }
-      else
-        pytest -v --junitxml=report.xml
-      fi
+      "$LOGGER" "INFO" "Installing Python dependencies from requirements.txt..."
+      pip3 install -r requirements.txt --break-system-packages
+      "$LOGGER" "INFO" "Running pytest unit tests..."
+      python3 -m pytest -v --junitxml=report.xml
       ;;
       
     "notification-service")
