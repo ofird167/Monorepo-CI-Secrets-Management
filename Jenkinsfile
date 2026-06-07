@@ -190,7 +190,7 @@ pipeline {
   post {
     always {
       // Cleans up the Jenkins node workspace to save disk space and remove transient logs
-      cleanWs()
+      deleteDir()
     }
     success {
       echo "Jenkins CI Pipeline execution completed successfully."
