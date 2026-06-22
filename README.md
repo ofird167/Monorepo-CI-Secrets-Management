@@ -97,7 +97,7 @@ To avoid modifying the `Jenkinsfile`, configure the environment variables global
    * `DOCKER_USERNAME` = `your-docker-username`
 
 #### Option B: Modify the Jenkinsfile
-Alternatively, you can modify the default fallback values inside the [Jenkinsfile](file:///home/devops-user/projects/Monorepo-CI-Secrets-Management/Jenkinsfile) environment block directly:
+Alternatively, you can modify the default fallback values inside the [Jenkinsfile](file:///home/ofird/projects/Monorepo-CI-Secrets-Management/Jenkinsfile) environment block directly:
 * **S3 State Bucket**: Update `AWS_S3_BUCKET` in the `Jenkinsfile` (line 12).
 * **Docker Registry & Username**: Update `DOCKER_REGISTRY` and `DOCKER_USERNAME` in the `Jenkinsfile` (lines 15-16).
 
