@@ -1,5 +1,6 @@
 # Secrets and sensitive data
-/secret/
+secrets/
+.env
 
 # Local logs
 /log/

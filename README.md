@@ -1,6 +1,6 @@
 # DevOps Monorepo CI Pipeline & Secrets Management
 
-This project implements a monorepo setup consisting of three microservices (Node.js, Python FastAPI, and Go), an intelligent Jenkins CI pipeline, a secure Git-ignored `/secret` management system backed by AWS S3 remote storage, and local execution logging.
+This project implements a monorepo setup consisting of three microservices (Node.js, Python FastAPI, and Go), an intelligent Jenkins CI pipeline, a secure Git-ignored `/secrets` management system backed by AWS S3 remote storage, and local execution logging.
 
 ## 📁 Repository Structure
 
@@ -33,8 +33,8 @@ root/
 │   │   └── scan.sh               # bandit / npm audit / custom secrets scanner
 │   └── aws/
 │       └── s3_sync.sh            # AWS S3 remote secrets sync tool
-├── secret/                       # Local secrets (ignored by Git)
-│   └── secrets.env               # Mock DB credentials & local environment file
+├── secrets/                      # Local secrets (ignored by Git)
+│   └── .env                      # Mock DB credentials & local environment file
 └── log/                          # Local execution logs (ignored by Git)
     └── logs.txt                  # Output of local CI script runs
 ```
@@ -73,17 +73,17 @@ graph TD
 
 ## 🔒 Secrets Management & Customization
 
-All database credentials, API keys, and sensitive environment configs are stored in `/secret` and synced with AWS S3. **This directory is excluded from Git via `.gitignore` to prevent secret leaks.**
+All database credentials, API keys, and sensitive environment configs are stored in `/secrets` and synced with AWS S3. **This directory is excluded from Git via `.gitignore` to prevent secret leaks.**
 
 ### 1. Local Configuration (via `example.env`)
 To run this project locally, developers need to create their own local secrets configuration file:
 
-1. Copy the template configuration file to the `/secret` folder:
+1. Copy the template configuration file to the `/secrets` folder:
    ```bash
-   mkdir -p secret
-   cp example.env secret/secrets.env
+   mkdir -p secrets
+   cp example.env secrets/.env
    ```
-2. Edit `secret/secrets.env` with your actual development secrets and database configuration (e.g., PostgreSQL credentials, local mock API keys).
+2. Edit `secrets/.env` with your actual development secrets and database configuration (e.g., PostgreSQL credentials, local mock API keys).
 
 ### 2. Customizing for Your Own Environment
 If another developer clones this repository, they can point the CI pipeline and sync scripts to their own AWS and Docker resources. There are two ways to do this:
@@ -114,13 +114,13 @@ A utility script `shared/aws/s3_sync.sh` is provided to manage secrets.
    ```bash
    ./shared/aws/s3_sync.sh upload
    ```
-   *Action:* Uploads files in `secret/` to your configured AWS S3 bucket (under `/secrets/`).
+   *Action:* Uploads files in `secrets/` to your configured AWS S3 bucket (under `/secrets/`).
 
 2. **Download remote secrets to local workstation:**
    ```bash
    ./shared/aws/s3_sync.sh download
    ```
-   *Action:* Syncs remote secrets from your AWS bucket into your local Git-ignored `secret/` folder.
+   *Action:* Syncs remote secrets from your AWS bucket into your local Git-ignored `secrets/` folder.
 
 3. **Delete all remote files in the S3 bucket (Cleanup):**
    ```bash

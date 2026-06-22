@@ -52,7 +52,7 @@ if echo "$CHANGED_FILES" | grep -q "^notification-service/"; then
 fi
 
 # If modifications are found in shared configurations or CI scripts, run all services.
-if echo "$CHANGED_FILES" | grep -qv -e "^user-service/" -e "^transaction-service/" -e "^notification-service/" -e "^log/" -e "^secret/" -e "^.gitignore"; then
+if echo "$CHANGED_FILES" | grep -qv -e "^user-service/" -e "^transaction-service/" -e "^notification-service/" -e "^log/" -e "^secrets/" -e "^.gitignore"; then
   "$LOGGER" "INFO" "Root level or CI shared changes detected. Building all services."
   echo "user-service transaction-service notification-service"
   exit 0

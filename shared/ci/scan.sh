@@ -36,7 +36,7 @@ else
   "$LOGGER" "WARN" "gitleaks not found. Running custom regex-based credentials scan..."
   
   # Search patterns for common hardcoded secrets (private keys, passwords, API keys)
-  # excluding the Git-ignored /secret/ and /log/ folders.
+  # excluding the Git-ignored /secrets/ and /log/ folders.
   SECRET_PATTERNS=(
     "api_key\s*=\s*['\"][a-zA-Z0-9_\-]{8,}['\"]"
     "password\s*=\s*['\"][a-zA-Z0-9_\-]{6,}['\"]"
@@ -48,8 +48,8 @@ else
   SECRET_FOUND=0
   SECRETS_LOG=$(mktemp)
   for PATTERN in "${SECRET_PATTERNS[@]}"; do
-    # Run git grep to respect .gitignore rules. Ignore matches inside /secret/ and /log/
-    if git -C "$ROOT_DIR" grep -E -I -n "$PATTERN" -- ':!secret/*' ':!log/*' > "$SECRETS_LOG" 2>&1; then
+    # Run git grep to respect .gitignore rules. Ignore matches inside /secrets/ and /log/
+    if git -C "$ROOT_DIR" grep -E -I -n "$PATTERN" -- ':!secrets/*' ':!log/*' > "$SECRETS_LOG" 2>&1; then
       "$LOGGER" "ERROR" "CRITICAL: Hardcoded secret pattern matches found:"
       cat "$SECRETS_LOG"
       SECRET_FOUND=1

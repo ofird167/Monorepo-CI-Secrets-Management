@@ -1,12 +1,12 @@
 #!/bin/bash
-# Synchronizes the /secret/ directory with AWS S3.
+# Synchronizes the /secrets/ directory with AWS S3.
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$SCRIPT_DIR/../.."
 LOGGER="$SCRIPT_DIR/../ci/logger.sh"
 BUCKET_NAME="${AWS_S3_BUCKET:-your-s3-bucket}"
-SECRET_DIR="$ROOT_DIR/secret"
+SECRET_DIR="$ROOT_DIR/secrets"
 
 chmod +x "$LOGGER"
 
@@ -15,7 +15,7 @@ mkdir -p "$SECRET_DIR"
 usage() {
   echo "Usage: $0 {upload|download|clean}"
   echo "  upload   : Sync local secrets to AWS S3 bucket: $BUCKET_NAME"
-  echo "  download : Sync remote secrets from AWS S3 to local /secret"
+  echo "  download : Sync remote secrets from AWS S3 to local /secrets"
   echo "  clean    : Empty all files inside AWS S3 bucket: $BUCKET_NAME"
   exit 1
 }
